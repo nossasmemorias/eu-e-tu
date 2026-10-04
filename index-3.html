@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu Diário de Fotos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fundo: #1f2d33;
+    --fundo-2: #263840;
+    --papel: #f7f3ec;
+    --tinta: #2b2b2b;
+    --destaque: #e8b4a0;
+    --suave: #9fb5bd;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: radial-gradient(circle at 20% 0%, var(--fundo-2), var(--fundo) 60%);
+    background-attachment: fixed;
+    color: var(--papel);
+    font-family: "Caveat", cursive;
+    min-height: 100vh;
+  }
+
+  /* Tela de abertura (necessária: navegadores só tocam música após um clique) */
+  #capa {
+    position: fixed; inset: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.5rem; text-align: center; padding: 2rem;
+    background: var(--fundo);
+    transition: opacity .8s ease, visibility .8s ease;
+  }
+  #capa.some { opacity: 0; visibility: hidden; }
+  #capa h1 {
+    font-family: "DM Serif Display", serif; font-weight: 400;
+    font-size: clamp(2.6rem, 9vw, 5rem); line-height: 1.05;
+  }
+  #capa p { font-size: 1.7rem; color: var(--suave); }
+  #abrir {
+    font: 700 1.6rem "Caveat", cursive;
+    background: var(--papel); color: var(--tinta);
+    border: 0; border-radius: 999px; padding: .6rem 2rem; cursor: pointer;
+  }
+  #abrir:hover { background: var(--destaque); }
+  #abrir:focus-visible, #som:focus-visible { outline: 3px solid var(--destaque); outline-offset: 3px; }
+
+  /* Botão de som */
+  #som {
+    position: fixed; top: 1rem; right: 1rem; z-index: 5;
+    font: 700 1.3rem "Caveat", cursive;
+    background: rgba(247,243,236,.12); color: var(--papel);
+    border: 1px solid rgba(247,243,236,.3); border-radius: 999px;
+    padding: .3rem 1rem; cursor: pointer; backdrop-filter: blur(6px);
+  }
+
+  header { text-align: center; padding: 5rem 1.5rem 2rem; }
+  header h2 {
+    font-family: "DM Serif Display", serif; font-weight: 400;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+  }
+  header p { font-size: 1.6rem; color: var(--suave); margin-top: .4rem; }
+
+  /* Linha do tempo */
+  main {
+    position: relative; max-width: 720px; margin: 0 auto;
+    padding: 2rem 1.5rem 6rem;
+  }
+  main::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: 50%;
+    width: 2px; background: rgba(247,243,236,.15);
+  }
+  .entrada { position: relative; display: flex; flex-direction: column; margin-bottom: 4.5rem; }
+  .entrada::before {
+    content: ""; position: absolute; top: 1.2rem; left: 50%;
+    width: 14px; height: 14px; margin-left: -7px; border-radius: 50%;
+    background: var(--destaque); border: 3px solid var(--fundo);
+  }
+  .polaroid {
+    width: min(100%, 340px);
+    background: var(--papel); color: var(--tinta);
+    padding: 14px 14px 18px; border-radius: 3px;
+    box-shadow: 0 14px 30px rgba(0,0,0,.4);
+  }
+  .entrada:nth-child(odd)  .polaroid { align-self: flex-start; transform: rotate(-2.5deg); }
+  .entrada:nth-child(even) .polaroid { align-self: flex-end;   transform: rotate(2.2deg); }
+  .polaroid img {
+    display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover;
+    background: #cfcfcf; cursor: zoom-in;
+  }
+  .polaroid .data { font-size: 1.15rem; color: #7a7a7a; margin-top: .8rem; }
+  .polaroid .legenda { font-size: 1.7rem; line-height: 1.15; font-weight: 700; margin-top: .1rem; }
+
+  footer { text-align: center; padding-bottom: 4rem; font-size: 1.5rem; color: var(--suave); }
+
+  /* Foto ampliada */
+  #zoom {
+    position: fixed; inset: 0; z-index: 20; display: none;
+    align-items: center; justify-content: center; flex-direction: column;
+    background: rgba(10,16,19,.92); padding: 1.5rem; cursor: zoom-out;
+  }
+  #zoom.aberto { display: flex; }
+  #zoom img { max-width: 100%; max-height: 80vh; border: 10px solid var(--papel); border-radius: 2px; }
+  #zoom p { font-size: 1.9rem; margin-top: 1rem; text-align: center; }
+
+  @media (max-width: 560px) {
+    main::before, .entrada::before { left: 10px; }
+    .entrada { padding-left: 1.6rem; }
+    .entrada:nth-child(n) .polaroid { align-self: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    #capa { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="capa">
+  <h1 id="titulo-capa">Meu Diário de Fotos</h1>
+  <p id="subtitulo-capa">Momentos que quero guardar</p>
+  <button id="abrir" type="button">Abrir diário</button>
+</div>
+
+<button id="som" type="button" aria-label="Ligar ou desligar a música">Música: ligada</button>
+<audio id="musica" loop preload="auto"></audio>
+
+<header>
+  <h2 id="titulo">Meu Diário de Fotos</h2>
+  <p id="subtitulo">Momentos que quero guardar</p>
+</header>
+
+<main id="diario"></main>
+<footer id="rodape">Continua...</footer>
+
+<div id="zoom" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <img alt="">
+  <p></p>
+</div>
+
+<script>
+/* =========================================================
+   CONFIGURAÇÃO — edite só esta parte
+   ========================================================= */
+const CONFIG = {
+  titulo: "Meu Diário de Fotos",
+  subtitulo: "Momentos que quero guardar",
+  rodape: "Continua...",
+
+  // Coloque o arquivo de música na mesma pasta do index.html
+  musica: "musica.mp3",
+  volume: 0.5, // de 0 a 1
+
+  // Uma linha para cada foto. As imagens ficam na pasta "fotos"
+  fotos: [
+    { src: "fotos/foto1.jpg", data: "12 de janeiro de 2026", legenda: "Nosso primeiro dia juntos" },
+    { src: "fotos/foto2.jpg", data: "03 de março de 2026",   legenda: "A viagem que nunca vou esquecer" },
+    { src: "fotos/foto3.jpg", data: "21 de junho de 2026",   legenda: "Tarde de domingo perfeita" },
+    { src: "fotos/foto4.jpg", data: "15 de agosto de 2026",  legenda: "Rindo sem motivo nenhum" }
+  ]
+};
+
+/* =========================================================
+   CÓDIGO — não precisa mexer
+   ========================================================= */
+document.title = CONFIG.titulo;
+document.getElementById("titulo").textContent = CONFIG.titulo;
+document.getElementById("titulo-capa").textContent = CONFIG.titulo;
+document.getElementById("subtitulo").textContent = CONFIG.subtitulo;
+document.getElementById("subtitulo-capa").textContent = CONFIG.subtitulo;
+document.getElementById("rodape").textContent = CONFIG.rodape;
+
+// Monta as fotos
+const diario = document.getElementById("diario");
+CONFIG.fotos.forEach(f => {
+  const entrada = document.createElement("article");
+  entrada.className = "entrada";
+
+  const polaroid = document.createElement("figure");
+  polaroid.className = "polaroid";
+
+  const img = document.createElement("img");
+  img.src = f.src;
+  img.alt = f.legenda;
+  img.loading = "lazy";
+  img.addEventListener("click", () => abrirZoom(f));
+
+  const legenda = document.createElement("figcaption");
+  const data = document.createElement("div");
+  data.className = "data";
+  data.textContent = f.data || "";
+  const texto = document.createElement("div");
+  texto.className = "legenda";
+  texto.textContent = f.legenda;
+  legenda.append(data, texto);
+
+  polaroid.append(img, legenda);
+  entrada.append(polaroid);
+  diario.append(entrada);
+});
+
+// Música
+const audio = document.getElementById("musica");
+const botaoSom = document.getElementById("som");
+audio.src = CONFIG.musica;
+audio.volume = CONFIG.volume;
+
+function atualizarBotao() {
+  botaoSom.textContent = audio.paused ? "Música: desligada" : "Música: ligada";
+}
+
+document.getElementById("abrir").addEventListener("click", () => {
+  document.getElementById("capa").classList.add("some");
+  audio.play().catch(() => {}).finally(atualizarBotao);
+});
+
+botaoSom.addEventListener("click", () => {
+  if (audio.paused) audio.play(); else audio.pause();
+  atualizarBotao();
+});
+
+// Foto ampliada
+const zoom = document.getElementById("zoom");
+function abrirZoom(f) {
+  zoom.querySelector("img").src = f.src;
+  zoom.querySelector("img").alt = f.legenda;
+  zoom.querySelector("p").textContent = f.legenda;
+  zoom.classList.add("aberto");
+}
+zoom.addEventListener("click", () => zoom.classList.remove("aberto"));
+document.addEventListener("keydown", e => { if (e.key === "Escape") zoom.classList.remove("aberto"); });
+</script>
+</body>
+</html>
