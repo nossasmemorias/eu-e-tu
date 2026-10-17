@@ -17,6 +17,7 @@
     --suave: #9fb5bd;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
   html { scroll-behavior: smooth; }
   body {
     background: radial-gradient(circle at 20% 0%, var(--fundo-2), var(--fundo) 60%);
@@ -25,6 +26,7 @@
     font-family: "Caveat", cursive;
     min-height: 100vh;
   }
+  section { scroll-margin-top: 1rem; }
 
   /* Tela de abertura (necessária: navegadores só tocam música após um clique) */
   #capa {
@@ -46,7 +48,7 @@
     border: 0; border-radius: 999px; padding: .6rem 2rem; cursor: pointer;
   }
   #abrir:hover { background: var(--destaque); }
-  #abrir:focus-visible, #som:focus-visible { outline: 3px solid var(--destaque); outline-offset: 3px; }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--destaque); outline-offset: 3px; }
 
   /* Botão de som */
   #som {
@@ -57,17 +59,49 @@
     padding: .3rem 1rem; cursor: pointer; backdrop-filter: blur(6px);
   }
 
-  header { text-align: center; padding: 5rem 1.5rem 2rem; }
+  header { text-align: center; padding: 5rem 1.5rem 1.2rem; }
   header h2 {
     font-family: "DM Serif Display", serif; font-weight: 400;
     font-size: clamp(2rem, 6vw, 3.4rem);
   }
   header p { font-size: 1.6rem; color: var(--suave); margin-top: .4rem; }
 
-  /* Linha do tempo */
+  /* Atalhos */
+  .atalhos { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; padding: 0 1.5rem 1rem; }
+  .atalhos a {
+    font-size: 1.4rem; color: var(--papel); text-decoration: none;
+    border: 1px solid rgba(247,243,236,.3); border-radius: 999px; padding: .15rem 1rem;
+  }
+  .atalhos a:hover { background: rgba(247,243,236,.12); }
+
+  /* Títulos de seção */
+  .secao { max-width: 720px; margin: 0 auto; padding: 3.5rem 1.5rem 0; }
+  .secao h3 {
+    font-family: "DM Serif Display", serif; font-weight: 400;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+  }
+  .secao > p { font-size: 1.6rem; color: var(--suave); margin-top: .2rem; }
+
+  /* Nossa história (marcos) */
+  .marcos { list-style: none; position: relative; padding-left: 2rem; margin-top: 1.6rem; }
+  .marcos::before {
+    content: ""; position: absolute; left: 6px; top: .5rem; bottom: .5rem;
+    width: 2px; background: rgba(247,243,236,.2);
+  }
+  .marco { position: relative; margin-bottom: 2.2rem; }
+  .marco::before {
+    content: ""; position: absolute; left: -2rem; top: .6rem;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--destaque); border: 3px solid var(--fundo);
+  }
+  .marco .data { font-size: 1.35rem; color: var(--destaque); }
+  .marco h4 { font-family: "DM Serif Display", serif; font-weight: 400; font-size: 1.7rem; line-height: 1.15; }
+  .marco p { font-size: 1.55rem; line-height: 1.2; color: rgba(247,243,236,.85); margin-top: .2rem; }
+
+  /* Linha do tempo de fotos */
   main {
     position: relative; max-width: 720px; margin: 0 auto;
-    padding: 2rem 1.5rem 6rem;
+    padding: 2rem 1.5rem 3rem;
   }
   main::before {
     content: ""; position: absolute; top: 0; bottom: 0; left: 50%;
@@ -87,14 +121,87 @@
   }
   .entrada:nth-child(odd)  .polaroid { align-self: flex-start; transform: rotate(-2.5deg); }
   .entrada:nth-child(even) .polaroid { align-self: flex-end;   transform: rotate(2.2deg); }
-  .polaroid img {
+  .polaroid img, .polaroid video {
     display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover;
-    background: #cfcfcf; cursor: zoom-in;
+    background: #cfcfcf;
   }
+  .polaroid img { cursor: zoom-in; }
+  .polaroid video { background: #111; }
   .polaroid .data { font-size: 1.15rem; color: #7a7a7a; margin-top: .8rem; }
   .polaroid .legenda { font-size: 1.7rem; line-height: 1.15; font-weight: 700; margin-top: .1rem; }
 
-  footer { text-align: center; padding-bottom: 4rem; font-size: 1.5rem; color: var(--suave); }
+  /* Cápsula do tempo */
+  .capsulas { display: grid; gap: 1.2rem; margin-top: 1.6rem; }
+  .capsula {
+    text-align: center; padding: 1.8rem 1.4rem;
+    border: 2px dashed rgba(247,243,236,.35); border-radius: 14px;
+    background: rgba(247,243,236,.05);
+  }
+  .capsula.aberta { border-style: solid; border-color: var(--destaque); }
+  .cadeado { color: var(--destaque); display: flex; justify-content: center; }
+  .argola { transform-box: fill-box; transform-origin: 100% 100%; transition: transform .6s ease; }
+  .capsula.aberta .argola { transform: rotate(28deg) translateY(-3px); }
+  .capsula h4 { font-family: "DM Serif Display", serif; font-weight: 400; font-size: 1.9rem; margin-top: .6rem; }
+  .capsula .quando { font-size: 1.5rem; color: var(--suave); }
+  .capsula .contagem { font-size: 1.7rem; font-weight: 700; color: var(--destaque); margin-top: .5rem; }
+  .capsula .abrir-msg {
+    font: 700 1.5rem "Caveat", cursive; margin-top: 1rem;
+    background: var(--papel); color: var(--tinta);
+    border: 0; border-radius: 999px; padding: .4rem 1.6rem; cursor: pointer;
+  }
+  .capsula .abrir-msg:hover { background: var(--destaque); }
+  .bilhete {
+    margin-top: 1.2rem; padding: 1.4rem 1.3rem; text-align: left;
+    background: var(--papel); color: var(--tinta); border-radius: 4px;
+    font-size: 1.7rem; line-height: 1.25; white-space: pre-line;
+    box-shadow: 0 10px 24px rgba(0,0,0,.35);
+  }
+
+  /* Cartas "abra quando" */
+  .cartas { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 1.4rem; margin-top: 1.6rem; }
+  .envelope {
+    position: relative; overflow: hidden; text-align: center; cursor: pointer;
+    background: var(--papel); color: var(--tinta); border: 0; border-radius: 4px;
+    padding: 4.4rem .9rem 1.2rem; min-height: 150px; font-family: inherit;
+    box-shadow: 0 10px 22px rgba(0,0,0,.35); transition: transform .2s ease;
+  }
+  .envelope:hover { transform: translateY(-3px) rotate(-1deg); }
+  .envelope::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 62px;
+    background: #e6dfd1; clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+  .envelope::after {
+    content: ""; position: absolute; top: 44px; left: 50%; width: 22px; height: 22px;
+    margin-left: -11px; border-radius: 50%; background: var(--destaque);
+    box-shadow: 0 2px 4px rgba(0,0,0,.25);
+  }
+  .envelope .peq { display: block; font-size: 1.2rem; color: #7a7a7a; }
+  .envelope .tema { display: block; font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+  .envelope.lida { opacity: .7; }
+
+  #carta {
+    position: fixed; inset: 0; z-index: 25; display: none;
+    align-items: center; justify-content: center; padding: 1.5rem;
+    background: rgba(10,16,19,.9);
+  }
+  #carta.aberto { display: flex; }
+  .papel-carta {
+    width: min(100%, 460px); max-height: 85vh; overflow-y: auto;
+    background: var(--papel); color: var(--tinta); border-radius: 4px;
+    padding: 1.8rem 1.6rem 1.4rem; box-shadow: 0 20px 50px rgba(0,0,0,.5);
+  }
+  .papel-carta h4 { font-family: "DM Serif Display", serif; font-weight: 400; font-size: 1.7rem; line-height: 1.15; }
+  .papel-carta .texto { font-size: 1.8rem; line-height: 1.25; margin-top: .9rem; white-space: pre-line; }
+  .papel-carta button {
+    font: 700 1.4rem "Caveat", cursive; margin-top: 1.2rem;
+    background: var(--tinta); color: var(--papel); border: 0; border-radius: 999px;
+    padding: .3rem 1.4rem; cursor: pointer;
+  }
+
+  .papel-carta audio { display: block; width: 100%; margin-top: 1rem; }
+  .papel-carta .erro-audio { font-size: 1.3rem; color: #a04030; margin-top: .5rem; }
+
+  footer { text-align: center; padding: 4rem 0; font-size: 1.5rem; color: var(--suave); }
 
   /* Foto ampliada */
   #zoom {
@@ -113,7 +220,7 @@
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    #capa { transition: none; }
+    #capa, .argola, .envelope { transition: none; }
   }
 </style>
 </head>
@@ -133,7 +240,39 @@
   <p id="subtitulo">Momentos que quero guardar</p>
 </header>
 
-<main id="diario"></main>
+<nav class="atalhos" aria-label="Seções">
+  <a href="#historia">Nossa história</a>
+  <a href="#fotos">Registros</a>
+  <a href="#capsula">Cápsula do tempo</a>
+  <a href="#cartas">Cartas</a>
+</nav>
+
+<section id="historia" class="secao">
+  <h3>Nossa história</h3>
+  <p>Os dias que mudaram tudo</p>
+  <ol class="marcos" id="marcos"></ol>
+</section>
+
+<section id="fotos">
+  <div class="secao">
+    <h3>Nossos registros</h3>
+    <p>Fotos e vídeos dos nossos momentos</p>
+  </div>
+  <main id="diario"></main>
+</section>
+
+<section id="capsula" class="secao">
+  <h3>Cápsula do tempo</h3>
+  <p>Mensagens que só podem ser abertas na data certa</p>
+  <div class="capsulas" id="capsulas"></div>
+</section>
+
+<section id="cartas" class="secao">
+  <h3>Abra quando...</h3>
+  <p>Escolha uma carta para o momento que você estiver vivendo</p>
+  <div class="cartas" id="lista-cartas"></div>
+</section>
+
 <footer id="rodape">Continua...</footer>
 
 <div id="zoom" role="dialog" aria-modal="true" aria-label="Foto ampliada">
@@ -141,9 +280,21 @@
   <p></p>
 </div>
 
+<div id="carta" role="dialog" aria-modal="true" aria-label="Carta">
+  <div class="papel-carta">
+    <h4 id="carta-titulo"></h4>
+    <div class="texto" id="carta-texto"></div>
+    <audio id="carta-audio" controls preload="none" hidden></audio>
+    <p class="erro-audio" id="carta-audio-erro" hidden>Não encontrei o áudio. Confira o nome do arquivo.</p>
+    <button type="button" id="fechar-carta">Fechar</button>
+  </div>
+</div>
+
 <script>
 /* =========================================================
    CONFIGURAÇÃO — edite só esta parte
+   Dica: cada item termina com vírgula, MENOS o último da lista.
+   Para pular linha dentro de um texto, escreva \n
    ========================================================= */
 const CONFIG = {
   titulo: "Diário dos Nossos Momentos",
@@ -154,13 +305,58 @@ const CONFIG = {
   musica: "musica.mp3",
   volume: 0.5, // de 0 a 1
 
-  // Uma linha para cada foto. As imagens ficam na pasta "fotos"
+  // NOSSA HISTÓRIA — os textos abaixo são exemplos, troque pelos seus
+  marcos: [
+    { data: "27 de setembro de 2026", titulo: "O dia em que me declarei", texto: "Tive coragem de dizer o que eu sentia, e foi o começo de tudo." },
+    { data: "30 de setembro de 2026", titulo: "Nosso primeiro beijo", texto: "Um momento que eu guardo com carinho até hoje." },
+    { data: "11 de outubro de 2026",  titulo: "Nossa primeira vez", texto: "Um dia só nosso." }
+  ],
+
+  // Uma linha para cada foto OU vídeo. Os arquivos ficam na pasta "fotos".
+  // Se o arquivo termina em .mp4, .webm ou .mov, o site mostra como vídeo automaticamente.
   fotos: [
     { src: "fotos/foto1.jpg", data: "27 de setembro de 2026", legenda: "Ainda não sabíamos o que vinha por aí" },
-    { src: "fotos/foto2.jpg", data: "01 de outubro de 2026",   legenda: "Fazendo do trabalho um lugar mais gostoso" },
-    { src: "fotos/foto4.jpg", data: "01 de outubro de 2026",   legenda: "Sem crachá, pra poder te amar em voz alta" },
+    { src: "fotos/foto2.jpg", data: "01 de outubro de 2026",  legenda: "Fazendo do trabalho um lugar mais gostoso" },
+    { src: "fotos/foto4.jpg", data: "01 de outubro de 2026",  legenda: "Sem crachá, pra poder te amar em voz alta" },
     { src: "fotos/foto3.jpg", data: "02 de outubro de 2026",  legenda: "Minha dupla dinâmica, a noite é melhor com você" },
-    { src: "fotos/foto5.jpg", data: "04 de outubro de 2026",  legenda: "Quero repetir esses registros todo dia, enquanto você também quiser" } 
+    { src: "fotos/foto5.jpg", data: "04 de outubro de 2026",  legenda: "Quero repetir esses registros todo dia, enquanto você também quiser" },
+    { src: "fotos/foto11.jpg", data: "05 de outubro de 2026",  legenda: "Mais um noite chegando cedo pra ir na conveniência..." },
+    { src: "fotos/video11.jpg", data: "05 de outubro de 2026",  legenda: "A bolsa que cabe tudo e mais um pouco" },
+    { src: "fotos/foto12.jpg", data: "06 de outubro de 2026",  legenda: "Vendo as duas mulheres que eu amo juntas e felizes" },
+    { src: "fotos/foto13.jpg", data: "08 de outubro de 2026",  legenda: "Eu adoro como você fica linda até fazendo careta" },
+    { src: "fotos/foto14.jpg", data: "11 de outubro de 2026",  legenda: "Toda noite torcendo pro intervalo ser com você" },
+    { src: "fotos/video2.jpg", data: "11 de outubro de 2026",  legenda: "Como eu amo dividir as madrugadas com você" },
+    { src: "fotos/foto15.jpg", data: "14 de outubro de 2026",  legenda: "Eu amo quando você vai me ver na universidade" },
+    { src: "fotos/video3.jpg", data: "14 de outubro de 2026",  legenda: "Sempre apressada, medrosa e linda" },
+    { src: "fotos/foto16.jpg", data: "15 de outubro de 2026",  legenda: "Nossa primeira vez num colchão que não era de uma gatito" },
+    { src: "fotos/foto17.jpg", data: "15 de outubro de 2026",  legenda: "Eu amo te beijar, tudo em mim faz amor com tudo em você" },
+    { src: "fotos/foto18.jpg", data: "17 de outubro de 2026",  legenda: "Depois de mais uma noite insana (em todos os sentidos)" }
+    
+  ],
+
+  // CÁPSULA DO TEMPO — abreEm no formato ANO-MÊS-DIA
+  // Para adicionar outra cápsula, copie o bloco inteiro e mude a data e a mensagem.
+  capsulas: [
+    {
+      titulo: "Nosso primeiro mês",
+      abreEm: "2026-10-27",
+      mensagem: "Escreva aqui a mensagem que só poderá ser lida no dia 27 de outubro."
+    }
+  ],
+
+  // CARTAS "ABRA QUANDO" — os textos abaixo são exemplos, troque pelos seus
+  // Para colocar áudio numa carta, acrescente  audio: "audios/nome.mp3"  no fim da linha dela, assim:
+  // { quando: "estiver com saudade", texto: "Seu texto aqui", audio: "audios/saudade.mp3" },
+  // Cartas sem "audio" aparecem só com o texto.
+  cartas: [
+    { quando: "estiver com saudade", texto: "A saudade é o azar de quem teve muita sorte. Se a saudade for de mim, é só pensar em mim porque eu também vou estar pensando em você, sempre tou, logo estamos juntas de novo." },
+    { quando: "o dia estiver difícil", texto: "Lembra que sempre que choveu, parou de chover (e que isso não é sobre o clima!). Você não precisa dar conta de tudo sozinha. Eu estou do seu lado, sempre vou estar, conte comigo e amanhã é outro dia." },
+    { quando: "precisar dar risada", audio: "audio1.m4a" "Adoro ficar repetindo isso só pra te ver sorrir" },
+    { quando: "não conseguir dormir", texto: "Deita, respira devagar e pensa na nossa última noite juntas. Eu estou torcendo para você conseguir descansar. Te amo" },
+    { quando: "a insegurança bater", texto: "Se a dúvida aparecer, lembra que eu escolhi você, e escolho de novo todos os dias e vou continuar te escolhendo, enquanto você me quiser." },
+    { quando: "estiver muito feliz", texto: "Que bom ver você assim! Quero fazer parte de todos os seus dias felizes. Comemora, e depois me conta tudo. Sou feliz sabendo da sua felicidade." },
+    { quando: "a gente se desentender", texto: "Discordar às vezes faz parte, e a gente se resolve conversando. Eu te amo, mesmo quando pensamos diferente. Vamos conversar com calma? Eu não quero perder você, eu não quero te deixar ir, é possível resolver tudo com diálogo e estou disposta a encontrar uma solução pra o que quer que seja." },
+    { quando: "quiser saber por que eu te amo", texto: "Porque você me faz rir, me acolhe e transforma qualquer lugar em um lugar bom, qualquer dia em um dia especial. Você é gentil, bondosa, tem bom gosto, é inteligente, sedutora, linda. Esses são só alguns dos motivos." }
   ]
 };
 
@@ -174,36 +370,7 @@ document.getElementById("subtitulo").textContent = CONFIG.subtitulo;
 document.getElementById("subtitulo-capa").textContent = CONFIG.subtitulo;
 document.getElementById("rodape").textContent = CONFIG.rodape;
 
-// Monta as fotos
-const diario = document.getElementById("diario");
-CONFIG.fotos.forEach(f => {
-  const entrada = document.createElement("article");
-  entrada.className = "entrada";
-
-  const polaroid = document.createElement("figure");
-  polaroid.className = "polaroid";
-
-  const img = document.createElement("img");
-  img.src = f.src;
-  img.alt = f.legenda;
-  img.loading = "lazy";
-  img.addEventListener("click", () => abrirZoom(f));
-
-  const legenda = document.createElement("figcaption");
-  const data = document.createElement("div");
-  data.className = "data";
-  data.textContent = f.data || "";
-  const texto = document.createElement("div");
-  texto.className = "legenda";
-  texto.textContent = f.legenda;
-  legenda.append(data, texto);
-
-  polaroid.append(img, legenda);
-  entrada.append(polaroid);
-  diario.append(entrada);
-});
-
-// Música
+// ---------- Música ----------
 const audio = document.getElementById("musica");
 const botaoSom = document.getElementById("som");
 audio.src = CONFIG.musica;
@@ -223,7 +390,244 @@ botaoSom.addEventListener("click", () => {
   atualizarBotao();
 });
 
-// Foto ampliada
+// Quando um vídeo toca, a música pausa; quando o vídeo para, a música volta
+let musicaPausadaPeloVideo = false;
+
+function configurarVideo(video) {
+  video.addEventListener("play", () => {
+    document.querySelectorAll("video").forEach(v => { if (v !== video) v.pause(); });
+    if (!audio.paused) {
+      audio.pause();
+      musicaPausadaPeloVideo = true;
+      atualizarBotao();
+    }
+  });
+  const retomar = () => {
+    if (musicaPausadaPeloVideo) {
+      musicaPausadaPeloVideo = false;
+      audio.play().catch(() => {}).finally(atualizarBotao);
+    }
+  };
+  video.addEventListener("pause", retomar);
+  video.addEventListener("ended", retomar);
+}
+
+// ---------- Nossa história ----------
+const listaMarcos = document.getElementById("marcos");
+CONFIG.marcos.forEach(m => {
+  const li = document.createElement("li");
+  li.className = "marco";
+  const data = document.createElement("div");
+  data.className = "data";
+  data.textContent = m.data;
+  const titulo = document.createElement("h4");
+  titulo.textContent = m.titulo;
+  li.append(data, titulo);
+  if (m.texto) {
+    const texto = document.createElement("p");
+    texto.textContent = m.texto;
+    li.append(texto);
+  }
+  listaMarcos.append(li);
+});
+
+// ---------- Fotos e vídeos ----------
+const EH_VIDEO = /\.(mp4|webm|mov|m4v|ogv)$/i;
+const diario = document.getElementById("diario");
+
+CONFIG.fotos.forEach(f => {
+  const entrada = document.createElement("article");
+  entrada.className = "entrada";
+
+  const polaroid = document.createElement("figure");
+  polaroid.className = "polaroid";
+
+  let midia;
+  if (EH_VIDEO.test(f.src)) {
+    midia = document.createElement("video");
+    midia.src = f.src + "#t=0.1"; // mostra um quadro antes de dar play
+    midia.controls = true;
+    midia.playsInline = true;
+    midia.preload = "metadata";
+    midia.setAttribute("aria-label", f.legenda);
+    configurarVideo(midia);
+  } else {
+    midia = document.createElement("img");
+    midia.src = f.src;
+    midia.alt = f.legenda;
+    midia.loading = "lazy";
+    midia.addEventListener("click", () => abrirZoom(f));
+  }
+
+  const legenda = document.createElement("figcaption");
+  const data = document.createElement("div");
+  data.className = "data";
+  data.textContent = f.data || "";
+  const texto = document.createElement("div");
+  texto.className = "legenda";
+  texto.textContent = f.legenda;
+  legenda.append(data, texto);
+
+  polaroid.append(midia, legenda);
+  entrada.append(polaroid);
+  diario.append(entrada);
+});
+
+// ---------- Cápsula do tempo ----------
+// Atenção: o bloqueio usa o relógio do aparelho de quem abre o site.
+function dataLocal(iso) {
+  const [a, m, d] = iso.split("-").map(Number);
+  return new Date(a, m - 1, d, 0, 0, 0);
+}
+
+function textoContagem(ms) {
+  const s = Math.floor(ms / 1000);
+  const dias = Math.floor(s / 86400);
+  const h = Math.floor((s % 86400) / 3600);
+  const min = Math.floor((s % 3600) / 60);
+  const seg = s % 60;
+  return "Faltam " + dias + (dias === 1 ? " dia, " : " dias, ") + h + " h, " + min + " min e " + seg + " s";
+}
+
+const LOCK_SVG =
+  '<svg viewBox="0 0 48 56" width="48" height="56" aria-hidden="true">' +
+  '<path class="argola" d="M14 26V18a10 10 0 0 1 20 0v8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>' +
+  '<rect x="6" y="26" width="36" height="26" rx="5" fill="currentColor"/>' +
+  '<circle cx="24" cy="39" r="4" fill="#1f2d33"/></svg>';
+
+const capsulasItens = [];
+const areaCapsulas = document.getElementById("capsulas");
+
+CONFIG.capsulas.forEach(c => {
+  const alvo = dataLocal(c.abreEm);
+
+  const card = document.createElement("div");
+  card.className = "capsula";
+
+  const cadeado = document.createElement("div");
+  cadeado.className = "cadeado";
+  cadeado.innerHTML = LOCK_SVG;
+
+  const titulo = document.createElement("h4");
+  titulo.textContent = c.titulo;
+
+  const quando = document.createElement("p");
+  quando.className = "quando";
+  quando.textContent = "Abre em " + alvo.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
+
+  const contagem = document.createElement("p");
+  contagem.className = "contagem";
+
+  const botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = "abrir-msg";
+  botao.textContent = "Abrir mensagem";
+  botao.hidden = true;
+
+  const bilhete = document.createElement("div");
+  bilhete.className = "bilhete";
+  bilhete.hidden = true;
+
+  botao.addEventListener("click", async () => {
+    if (!bilhete.hidden) {
+      bilhete.hidden = true;
+      botao.textContent = "Abrir mensagem";
+      return;
+    }
+    let texto = c.mensagem || "";
+    if (!texto && c.arquivo) {
+      try {
+        const r = await fetch(c.arquivo, { cache: "no-store" });
+        if (!r.ok) throw new Error("sem arquivo");
+        texto = await r.text();
+      } catch (e) {
+        texto = "A mensagem ainda não foi enviada para o site.";
+      }
+    }
+    bilhete.textContent = texto;
+    bilhete.hidden = false;
+    botao.textContent = "Fechar mensagem";
+  });
+
+  card.append(cadeado, titulo, quando, contagem, botao, bilhete);
+  areaCapsulas.append(card);
+
+  capsulasItens.push({ alvo, card, contagem, botao, aberta: false });
+});
+
+function atualizarCapsulas() {
+  capsulasItens.forEach(item => {
+    if (item.aberta) return;
+    const falta = item.alvo.getTime() - Date.now();
+    if (falta <= 0) {
+      item.aberta = true;
+      item.card.classList.add("aberta");
+      item.contagem.textContent = "Chegou o dia!";
+      item.botao.hidden = false;
+    } else {
+      item.contagem.textContent = textoContagem(falta);
+    }
+  });
+}
+atualizarCapsulas();
+setInterval(atualizarCapsulas, 1000);
+
+// ---------- Cartas "abra quando" ----------
+const areaCartas = document.getElementById("lista-cartas");
+const modalCarta = document.getElementById("carta");
+const botaoFecharCarta = document.getElementById("fechar-carta");
+let envelopeAtivo = null;
+const cartaAudio = document.getElementById("carta-audio");
+const cartaAudioErro = document.getElementById("carta-audio-erro");
+configurarVideo(cartaAudio); // mesma regra dos vídeos: a música de fundo pausa enquanto o áudio toca
+
+function prepararAudioCarta(arquivo) {
+  cartaAudio.pause();
+  cartaAudioErro.hidden = true;
+  if (arquivo) {
+    cartaAudio.src = arquivo;
+    cartaAudio.hidden = false;
+  } else {
+    cartaAudio.removeAttribute("src");
+    cartaAudio.hidden = true;
+  }
+}
+cartaAudio.addEventListener("error", () => {
+  if (cartaAudio.getAttribute("src")) cartaAudioErro.hidden = false;
+});
+
+CONFIG.cartas.forEach(c => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "envelope";
+  const peq = document.createElement("span");
+  peq.className = "peq";
+  peq.textContent = "Abra quando";
+  const tema = document.createElement("span");
+  tema.className = "tema";
+  tema.textContent = c.quando;
+  b.append(peq, tema);
+  b.addEventListener("click", () => {
+    document.getElementById("carta-titulo").textContent = "Abra quando " + c.quando;
+    document.getElementById("carta-texto").textContent = c.texto;
+    prepararAudioCarta(c.audio);
+    modalCarta.classList.add("aberto");
+    b.classList.add("lida");
+    envelopeAtivo = b;
+    botaoFecharCarta.focus();
+  });
+  areaCartas.append(b);
+});
+
+function fecharCarta() {
+  cartaAudio.pause();
+  modalCarta.classList.remove("aberto");
+  if (envelopeAtivo) envelopeAtivo.focus();
+}
+botaoFecharCarta.addEventListener("click", fecharCarta);
+modalCarta.addEventListener("click", e => { if (e.target === modalCarta) fecharCarta(); });
+
+// ---------- Foto ampliada ----------
 const zoom = document.getElementById("zoom");
 function abrirZoom(f) {
   zoom.querySelector("img").src = f.src;
@@ -232,7 +636,12 @@ function abrirZoom(f) {
   zoom.classList.add("aberto");
 }
 zoom.addEventListener("click", () => zoom.classList.remove("aberto"));
-document.addEventListener("keydown", e => { if (e.key === "Escape") zoom.classList.remove("aberto"); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    zoom.classList.remove("aberto");
+    if (modalCarta.classList.contains("aberto")) fecharCarta();
+  }
+});
 </script>
 </body>
 </html>
