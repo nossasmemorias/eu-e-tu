@@ -321,13 +321,13 @@ const CONFIG = {
     { src: "fotos/foto3.jpg", data: "02 de outubro de 2026",  legenda: "Minha dupla dinâmica, a noite é melhor com você" },
     { src: "fotos/foto5.jpg", data: "04 de outubro de 2026",  legenda: "Quero repetir esses registros todo dia, enquanto você também quiser" },
     { src: "fotos/foto11.jpg", data: "05 de outubro de 2026",  legenda: "Mais um noite chegando cedo pra ir na conveniência..." },
-    { src: "fotos/video11.jpg", data: "05 de outubro de 2026",  legenda: "A bolsa que cabe tudo e mais um pouco" },
+    { src: "fotos/video11.mp4", data: "05 de outubro de 2026",  legenda: "A bolsa que cabe tudo e mais um pouco" },
     { src: "fotos/foto12.jpg", data: "06 de outubro de 2026",  legenda: "Vendo as duas mulheres que eu amo juntas e felizes" },
     { src: "fotos/foto13.jpg", data: "08 de outubro de 2026",  legenda: "Eu adoro como você fica linda até fazendo careta" },
     { src: "fotos/foto14.jpg", data: "11 de outubro de 2026",  legenda: "Toda noite torcendo pro intervalo ser com você" },
-    { src: "fotos/video2.jpg", data: "11 de outubro de 2026",  legenda: "Como eu amo dividir as madrugadas com você" },
+    { src: "fotos/video2.mp4", data: "11 de outubro de 2026",  legenda: "Como eu amo dividir as madrugadas com você" },
     { src: "fotos/foto15.jpg", data: "14 de outubro de 2026",  legenda: "Eu amo quando você vai me ver na universidade" },
-    { src: "fotos/video3.jpg", data: "14 de outubro de 2026",  legenda: "Sempre apressada, medrosa e linda" },
+    { src: "fotos/video3.mp4", data: "14 de outubro de 2026",  legenda: "Sempre apressada, medrosa e linda" },
     { src: "fotos/foto16.jpg", data: "15 de outubro de 2026",  legenda: "Nossa primeira vez num colchão que não era de uma gatito" },
     { src: "fotos/foto17.jpg", data: "15 de outubro de 2026",  legenda: "Eu amo te beijar, tudo em mim faz amor com tudo em você" },
     { src: "fotos/foto18.jpg", data: "17 de outubro de 2026",  legenda: "Depois de mais uma noite insana (em todos os sentidos)" }
@@ -351,7 +351,7 @@ const CONFIG = {
   cartas: [
     { quando: "estiver com saudade", texto: "A saudade é o azar de quem teve muita sorte. Se a saudade for de mim, é só pensar em mim porque eu também vou estar pensando em você, sempre tou, logo estamos juntas de novo." },
     { quando: "o dia estiver difícil", texto: "Lembra que sempre que choveu, parou de chover (e que isso não é sobre o clima!). Você não precisa dar conta de tudo sozinha. Eu estou do seu lado, sempre vou estar, conte comigo e amanhã é outro dia." },
-    { quando: "precisar dar risada", audio: "audio1.m4a" "Adoro ficar repetindo isso só pra te ver sorrir" },
+    { quando: "precisar dar risada", texto: "Adoro ficar repetindo isso só pra te ver sorrir", audio: "audio1.m4a" },
     { quando: "não conseguir dormir", texto: "Deita, respira devagar e pensa na nossa última noite juntas. Eu estou torcendo para você conseguir descansar. Te amo" },
     { quando: "a insegurança bater", texto: "Se a dúvida aparecer, lembra que eu escolhi você, e escolho de novo todos os dias e vou continuar te escolhendo, enquanto você me quiser." },
     { quando: "estiver muito feliz", texto: "Que bom ver você assim! Quero fazer parte de todos os seus dias felizes. Comemora, e depois me conta tudo. Sou feliz sabendo da sua felicidade." },
@@ -609,7 +609,7 @@ CONFIG.cartas.forEach(c => {
   b.append(peq, tema);
   b.addEventListener("click", () => {
     document.getElementById("carta-titulo").textContent = "Abra quando " + c.quando;
-    document.getElementById("carta-texto").textContent = c.texto;
+    document.getElementById("carta-texto").textContent = c.texto || "";
     prepararAudioCarta(c.audio);
     modalCarta.classList.add("aberto");
     b.classList.add("lida");
